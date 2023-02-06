@@ -18,7 +18,8 @@ internal sealed class UpdateProductCommandHandler : ICommandHandler<UpdateProduc
 
     public async Task<Product> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
-        var product = Product.Create(request.ProductId,
+        var product = Product.Create(
+            request.ProductId,
             request.Name,
             request.Description,
             request.Price,

@@ -4,6 +4,12 @@ namespace Domain.Entities;
 
 public sealed class Product: Entity
 {
+    internal Product()
+    {
+        Name = string.Empty;
+        Description = string.Empty;
+    }
+
     private Product(Guid id, string name, string description, double price, int stock)
         : base(id)
     {

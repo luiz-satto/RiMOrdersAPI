@@ -4,6 +4,12 @@ namespace Domain.Entities;
 
 public sealed class OrderItem : Entity
 {
+    internal OrderItem()
+    {
+        OrderFk = new();
+        ProductFk = new();
+    }
+
     private OrderItem(
         Guid id,
         Guid orderId,
@@ -14,15 +20,17 @@ public sealed class OrderItem : Entity
         OrderId = orderId;
         ProductId = productId;
         Quantity = quantity;
+        OrderFk = new();
+        ProductFk = new();
     }
 
     public int Quantity { get; set; }
 
     public Guid OrderId { get; private set; }
-    public Order? OrderFk { get; private set; }
+    public Order OrderFk { get; init; }
 
     public Guid ProductId { get; private set; }
-    public Product? ProductFk { get; private set; }
+    public Product ProductFk { get; init; }
 
     public static OrderItem Create(
         Guid id,

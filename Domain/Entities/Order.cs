@@ -4,6 +4,12 @@ namespace Domain.Entities;
 
 public sealed class Order : Entity
 {
+    internal Order()
+    {
+        Email = string.Empty;
+        DeliveryAddress = string.Empty;
+    }
+
     private Order(
         Guid id,
         string email,
@@ -23,14 +29,14 @@ public sealed class Order : Entity
     public DateTime CreationDate { get; private set; }
     public DateTime? DateCancelled { get; private set; }
     public bool IsCancelled { get; private set; }
-    public List<OrderItem>? Items { get; private set; }
+    public IReadOnlyList<OrderItem>? Items { get; private set; }
 
     public static Order Create(
         Guid id,
         string email,
         string deliveryAddress,
         DateTime? dateCancelled = null,
-        List<OrderItem>? items = null)
+        IReadOnlyList<OrderItem>? items = null)
     {
         var order = new Order(
             id,
