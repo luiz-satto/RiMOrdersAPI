@@ -4,7 +4,12 @@ namespace Domain.Entities;
 
 public sealed class Order : Entity
 {
-    public Order(Guid id, string email, string deliveryAddress, DateTime creationDate, DateTime? dateCancelled)
+    private Order(
+        Guid id,
+        string email,
+        string deliveryAddress,
+        DateTime creationDate,
+        DateTime? dateCancelled)
         : base(id)
     {
         Email = email;
@@ -17,8 +22,24 @@ public sealed class Order : Entity
     public string Email { get; private set; }
     public string DeliveryAddress { get; private set; }
     public DateTime CreationDate { get; private set; }
-    public DateTime? DateCancelled { get; set; }
-    public bool IsCancelled { get; set; }
+    public DateTime? DateCancelled { get; private set; }
+    public bool IsCancelled { get; private set; }
+    public List<OrderItem>? Items { get; private set; }
 
-    public IReadOnlyList<OrderItem>? Items { get; private set; }
+    public static Order Create(
+        Guid id,
+        string email,
+        string deliveryAddress,
+        DateTime creationDate,
+        DateTime? dateCancelled = null,
+        List<OrderItem>? items = null)
+    {
+        var order = new Order(id, email, deliveryAddress, creationDate, dateCancelled)
+        {
+            IsCancelled = dateCancelled is not null,
+            Items = items
+        };
+
+        return order;
+    }
 }

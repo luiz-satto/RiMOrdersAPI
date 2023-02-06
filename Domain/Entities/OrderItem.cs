@@ -4,7 +4,11 @@ namespace Domain.Entities;
 
 public sealed class OrderItem : Entity
 {
-    public OrderItem(Guid id, Guid orderId, Guid productId, int quantity)
+    private OrderItem(
+        Guid id,
+        Guid orderId,
+        Guid productId,
+        int quantity)
         : base(id)
     {
         OrderId = orderId;
@@ -19,4 +23,14 @@ public sealed class OrderItem : Entity
 
     public Guid ProductId { get; private set; }
     public Product? ProductFk { get; private set; }
+
+    public static OrderItem Create(
+        Guid id,
+        Guid orderId,
+        Guid productId,
+        int quantity)
+    {
+        var orderItem = new OrderItem(id, orderId, productId, quantity);
+        return orderItem;
+    }
 }

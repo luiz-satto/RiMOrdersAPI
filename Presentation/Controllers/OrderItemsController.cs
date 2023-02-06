@@ -34,8 +34,7 @@ public sealed class OrderItemsController : ApiController
         var orderItems = new List<OrderItemDto>();
         foreach (var item in orderItemResponse)
         {
-            var product = new Product(item.ProductId, item.ProductName, item.ProductDescription, item.ProductPrice, item.ProductStock);
-            var orderItem = new OrderItemDto(item.Id, item.OrderId, item.Quantity, product);
+            var orderItem = OrderItemDto.Create(item);
             orderItems.Add(orderItem);
         }
 
@@ -49,7 +48,7 @@ public sealed class OrderItemsController : ApiController
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>If the order item was created.</returns>
     [HttpPost("Create")]
-    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(bool), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateOrderItem(
         [FromBody] CreateOrderItemRequest request,
@@ -57,7 +56,7 @@ public sealed class OrderItemsController : ApiController
     {
         var command = request.Adapt<CreateOrderItemCommand>();
         var created = await Sender.Send(command, cancellationToken);
-        return CreatedAtAction(nameof(GetOrderItems), new { request.OrderId }, created);
+        return Ok(created);
     }
 
     /// <summary>

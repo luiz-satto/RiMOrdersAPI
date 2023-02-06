@@ -18,19 +18,24 @@ internal sealed class UpdateProductCommandHandler : ICommandHandler<UpdateProduc
 
     public async Task<Product> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
-        var updatedProduct = _productRepository.Update(new(
-            request.ProductId,
+        var product = Product.Create(request.ProductId,
             request.Name,
             request.Description,
             request.Price,
-            request.Stock));
+            request.Stock);
 
-        if (updatedProduct is null)
+        if (product is null)
+        {
+            throw new Exception(Error.NullValue);
+        }
+
+        var result = _productRepository.Update(product);
+        if (result is null)
         {
             throw new Exception(Error.NullValue);
         }
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        return updatedProduct;
+        return result;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions.Messaging;
 using Domain.Abstractions;
+using Domain.Entities;
 using Domain.Shared;
 
 namespace Application.Orders.Commands.CancelOrder;
@@ -23,8 +24,12 @@ internal sealed class CancelOrderCommandHandler : ICommandHandler<CancelOrderCom
             return false;
         }
 
-        order.DateCancelled = request.DateCancelled;
-        order.IsCancelled = true;
+        order = Order.Create(
+            request.OrderId,
+            order.Email,
+            order.DeliveryAddress,
+            order.CreationDate,
+            request.DateCancelled);
 
         var updatedOrder = _orderRepository.Update(order);
         if (updatedOrder is null)

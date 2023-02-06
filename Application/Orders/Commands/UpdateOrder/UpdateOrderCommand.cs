@@ -8,5 +8,6 @@ public sealed record UpdateOrderCommand(
     string Email,
     string DeliveryAddress,
     DateTime CreationDate,
-    DateTime? DateCancelled
+    DateTime? DateCancelled,
+    List<OrderItem>? Items
 ) : ICommand<Order>;

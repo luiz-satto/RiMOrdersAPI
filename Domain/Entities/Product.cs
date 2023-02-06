@@ -4,7 +4,7 @@ namespace Domain.Entities;
 
 public sealed class Product: Entity
 {
-    public Product(Guid id, string name, string description, double price, int stock)
+    private Product(Guid id, string name, string description, double price, int stock)
         : base(id)
     {
         Name = name;
@@ -17,4 +17,10 @@ public sealed class Product: Entity
     public string Description { get; private set; }
     public double Price { get; private set; }
     public int Stock { get; private set; }
+
+    public static Product Create(Guid id, string name, string description, double price, int stock)
+    {
+        var product = new Product(id, name, description, price, stock);
+        return product;
+    }
 }

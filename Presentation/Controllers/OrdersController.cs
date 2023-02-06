@@ -38,29 +38,14 @@ public sealed class OrdersController : ApiController
             throw new Exception(Error.NullValue);
         }
 
-        var oderItemsQuery = new GetOrderItemsByIdQuery(orderId);
-        var orderItemResponse = await Sender.Send(oderItemsQuery, cancellationToken);
+        var orderItemsQuery = new GetOrderItemsByIdQuery(orderId);
+        var orderItemResponse = await Sender.Send(orderItemsQuery, cancellationToken);
         if (orderItemResponse is null)
         {
             throw new Exception(Error.NullValue);
         }
 
-        var orderItems = new List<OrderItemDto>();
-        foreach (var item in orderItemResponse)
-        {
-            var product = new Product(item.ProductId, item.ProductName, item.ProductDescription, item.ProductPrice, item.ProductStock);
-            var orderItem = new OrderItemDto(item.Id, item.OrderId, item.Quantity, product);
-            orderItems.Add(orderItem);
-        }
-
-        var order = new OrderDto(
-            orderResponse.Id,
-            orderResponse.Email,
-            orderResponse.DeliveryAddress,
-            orderResponse.CreationDate,
-            orderResponse.DateCancelled,
-            orderItems);
-
+        var order = OrderDto.Create(orderResponse, orderItemResponse);
         return Ok(order);
     }
 

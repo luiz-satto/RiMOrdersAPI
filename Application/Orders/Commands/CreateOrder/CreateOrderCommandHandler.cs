@@ -17,7 +17,7 @@ internal sealed class CreateOrderCommandHandler : ICommandHandler<CreateOrderCom
 
     public async Task<Guid> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
-        var order = new Order(Guid.NewGuid(), request.Email, request.DeliveryAddress, request.CreationDate, null);
+        var order = Order.Create(Guid.NewGuid(), request.Email, request.DeliveryAddress, request.CreationDate);
         _orderRepository.Insert(order);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return order.Id;

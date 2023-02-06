@@ -18,19 +18,26 @@ internal sealed class UpdateOrderCommandHandler : ICommandHandler<UpdateOrderCom
 
     public async Task<Order> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
     {
-        var updatedOrder = _orderRepository.Update(new(
+        var order = Order.Create(
             request.OrderId,
             request.Email,
             request.DeliveryAddress,
             request.CreationDate,
-            request.DateCancelled));
+            request.DateCancelled,
+            request.Items);
 
-        if (updatedOrder is null)
+        if (order is null)
+        {
+            throw new Exception(Error.NullValue);
+        }
+
+        var result = _orderRepository.Update(order);
+        if (result is null)
         {
             throw new Exception(Error.NullValue);
         }
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        return updatedOrder;
+        return result;
     }
 }

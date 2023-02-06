@@ -1,10 +1,18 @@
 ﻿using Application.OrderItems.Dtos;
+using Application.OrderItems.Queries.GetOrderItemById;
+using Application.Orders.Queries;
 
 namespace Application.Orders.Dtos;
 
 public sealed class OrderDto
 {
-    public OrderDto(Guid id, string email, string deliveryAddress, DateTime creationDate, DateTime? dateCancelled, List<OrderItemDto> orderItems)
+    private OrderDto(
+        Guid id,
+        string email,
+        string deliveryAddress,
+        DateTime creationDate,
+        DateTime? dateCancelled,
+        List<OrderItemDto> orderItems)
     {
         Id = id;
         Email = email;
@@ -22,4 +30,24 @@ public sealed class OrderDto
     public DateTime? DateCancelled { get; }
     public bool IsCancelled { get; set; }
     public IReadOnlyList<OrderItemDto> OrderItems { get; }
+
+    public static OrderDto Create(OrderResponse orderResponse, IEnumerable<OrderItemResponse> orderItemResponse)
+    {
+        var orderItems = new List<OrderItemDto>();
+        foreach (var item in orderItemResponse)
+        {
+            var orderItem = OrderItemDto.Create(item);
+            orderItems.Add(orderItem);
+        }
+
+        var order = new OrderDto(
+            orderResponse.Id,
+            orderResponse.Email,
+            orderResponse.DeliveryAddress,
+            orderResponse.CreationDate,
+            orderResponse.DateCancelled,
+            orderItems);
+
+        return order;
+    }
 }

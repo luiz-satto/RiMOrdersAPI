@@ -19,15 +19,19 @@ internal sealed class UpdateOrderItemCommandHandler : ICommandHandler<UpdateOrde
     public async Task<OrderItem> Handle(UpdateOrderItemCommand request, CancellationToken cancellationToken)
     {
         var orderItem = _orderItemRepository.Get(request.OrderItemId).Value;
-        orderItem.Quantity = request.Quantity;
+        if (orderItem is null)
+        {
+            throw new Exception(Error.NullValue);
+        }
 
-        var updatedOrderItem = _orderItemRepository.Update(orderItem);
-        if (updatedOrderItem is null)
+        orderItem.Quantity = request.Quantity;
+        var result = _orderItemRepository.Update(orderItem);
+        if (result is null)
         {
             throw new Exception(Error.NullValue);
         }
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        return updatedOrderItem;
+        return result;
     }
 }
