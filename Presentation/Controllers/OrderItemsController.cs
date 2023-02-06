@@ -1,8 +1,8 @@
 ﻿using Application.OrderItems.Commands.CreateOrderItem;
 using Application.OrderItems.Commands.DeleteOrderItem;
 using Application.OrderItems.Commands.UpdateOrderItem;
-using Application.OrderItems.Dtos;
 using Application.OrderItems.Queries.GetOrderItemById;
+using Application.Orders.Queries;
 using Domain.Entities;
 using Domain.Shared;
 using Mapster;
@@ -24,21 +24,35 @@ public sealed class OrderItemsController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetOrderItems(Guid orderId, CancellationToken cancellationToken)
     {
-        var query = new GetOrderItemsByIdQuery(orderId);
-        var orderItemResponse = await Sender.Send(query, cancellationToken);
+        var orderItemQuery = new GetOrderItemsByIdQuery(orderId);
+        var orderItemResponse = await Sender.Send(orderItemQuery, cancellationToken);
         if (orderItemResponse is null)
         {
             throw new Exception(Error.NullValue);
         }
 
-        var orderItems = new List<OrderItemDto>();
+        var _orderItems = new List<OrderItem>();
         foreach (var item in orderItemResponse)
         {
-            var orderItem = OrderItemDto.Create(item);
-            orderItems.Add(orderItem);
+            var orderQuery = new GetOrderByIdQuery(item.OrderId);
+            var orderResponse = await Sender.Send(orderQuery, cancellationToken);
+            var _orderItem = OrderItem.Create(
+                item.Id,
+                orderResponse.Id,
+                orderResponse.Email,
+                orderResponse.DeliveryAddress,
+                orderResponse.DateCancelled,
+                item.ProductId,
+                item.ProductName,
+                item.ProductDescription,
+                item.ProductPrice,
+                item.ProductStock,
+                item.Quantity);
+
+            _orderItems.Add(_orderItem);
         }
 
-        return Ok(orderItems);
+        return Ok(_orderItems);
     }
 
     /// <summary>

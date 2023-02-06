@@ -1,10 +1,8 @@
-﻿using Application.OrderItems.Dtos;
-using Application.OrderItems.Queries.GetOrderItemById;
+﻿using Application.OrderItems.Queries.GetOrderItemById;
 using Application.Orders.Commands.CancelOrder;
 using Application.Orders.Commands.CreateOrder;
 using Application.Orders.Commands.DeleteOrder;
 using Application.Orders.Commands.UpdateOrder;
-using Application.Orders.Dtos;
 using Application.Orders.Queries;
 using Application.Orders.Queries.GetAllOrders;
 using Domain.Entities;
@@ -45,8 +43,27 @@ public sealed class OrdersController : ApiController
             throw new Exception(Error.NullValue);
         }
 
-        var order = OrderDto.Create(orderResponse, orderItemResponse);
-        return Ok(order);
+        var _orderItems = new List<OrderItem>();
+        foreach (var item in orderItemResponse)
+        {
+            var _orderItem = OrderItem.Create(
+                item.Id,
+                orderResponse.Id,
+                orderResponse.Email,
+                orderResponse.DeliveryAddress,
+                orderResponse.DateCancelled,
+                item.ProductId,
+                item.ProductName,
+                item.ProductDescription,
+                item.ProductPrice,
+                item.ProductStock,
+                item.Quantity);
+
+            _orderItems.Add(_orderItem);
+        }
+
+        var _order = Order.Create(orderResponse.Id, orderResponse.Email, orderResponse.DeliveryAddress, orderResponse.CreationDate, _orderItems);
+        return Ok(_order);
     }
 
     /// <summary>
@@ -69,13 +86,13 @@ public sealed class OrdersController : ApiController
             throw new Exception(Error.NullValue);
         }
 
-        var orders = new List<OrderDto>();
+        var orders = new List<Order>();
         foreach (var order in ordersResponse)
         {
             var _order = (await GetOrder(order.Id, cancellationToken)) as ObjectResult;
             if (_order is not null)
             {
-                var result = _order.Value as OrderDto;
+                var result = _order.Value as Order;
                 if (result is not null)
                 {
                     orders.Add(result);

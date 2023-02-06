@@ -26,14 +26,21 @@ public sealed class OrderItem : Entity
 
     public static OrderItem Create(
         Guid id,
-        Order order,
-        Product product,
+        Guid orderId,
+        string orderEmail,
+        string orderDeliveryAddress,
+        DateTime? dateCancelled,
+        Guid productId,
+        string productName,
+        string productDescription,
+        double productPrice,
+        int productStock,
         int quantity)
     {
-        var orderItem = new OrderItem(id, order.Id, product.Id, quantity)
+        var orderItem = new OrderItem(id, orderId, productId, quantity)
         {
-            OrderFk = order,
-            ProductFk = product
+            OrderFk = Order.Create(orderId, orderEmail, orderDeliveryAddress, dateCancelled),
+            ProductFk = Product.Create(productId, productName, productDescription, productPrice, productStock)
         };
 
         return orderItem;

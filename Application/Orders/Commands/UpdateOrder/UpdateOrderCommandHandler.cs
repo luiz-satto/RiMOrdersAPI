@@ -22,7 +22,6 @@ internal sealed class UpdateOrderCommandHandler : ICommandHandler<UpdateOrderCom
             request.OrderId,
             request.Email,
             request.DeliveryAddress,
-            request.CreationDate,
             request.DateCancelled,
             request.Items);
 

@@ -6,6 +6,7 @@ public sealed class CancelOrderCommandValidator : AbstractValidator<CancelOrderC
 {
     public CancelOrderCommandValidator()
     {
-        RuleFor(x => x.DateCancelled).NotEmpty();
+        RuleFor(x => x.DateCancelled)
+            .NotEmpty();
     }
 }

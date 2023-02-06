@@ -8,15 +8,14 @@ public sealed class Order : Entity
         Guid id,
         string email,
         string deliveryAddress,
-        DateTime creationDate,
         DateTime? dateCancelled)
         : base(id)
     {
         Email = email;
         DeliveryAddress = deliveryAddress;
-        CreationDate = creationDate;
         DateCancelled = dateCancelled;
         IsCancelled = dateCancelled is not null;
+        CreationDate = DateTime.UtcNow;
     }
 
     public string Email { get; private set; }
@@ -30,13 +29,15 @@ public sealed class Order : Entity
         Guid id,
         string email,
         string deliveryAddress,
-        DateTime creationDate,
         DateTime? dateCancelled = null,
         List<OrderItem>? items = null)
     {
-        var order = new Order(id, email, deliveryAddress, creationDate, dateCancelled)
+        var order = new Order(
+            id,
+            email,
+            deliveryAddress,
+            dateCancelled)
         {
-            IsCancelled = dateCancelled is not null,
             Items = items
         };
 

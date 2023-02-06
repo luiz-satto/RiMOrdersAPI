@@ -28,7 +28,6 @@ internal sealed class CancelOrderCommandHandler : ICommandHandler<CancelOrderCom
             request.OrderId,
             order.Email,
             order.DeliveryAddress,
-            order.CreationDate,
             request.DateCancelled);
 
         var updatedOrder = _orderRepository.Update(order);

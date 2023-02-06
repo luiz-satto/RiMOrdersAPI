@@ -7,9 +7,14 @@ public sealed class UpdateOrderCommandValidator : AbstractValidator<UpdateOrderC
 {
     public UpdateOrderCommandValidator()
     {
-        RuleFor(x => x.OrderId).NotEmpty();
-        RuleFor(x => x.Email).NotEmpty().Matches(new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"));
-        RuleFor(x => x.DeliveryAddress).NotEmpty();
-        RuleFor(x => x.CreationDate).NotEmpty();
+        RuleFor(x => x.OrderId)
+            .NotEmpty();
+
+        RuleFor(x => x.DeliveryAddress)
+            .NotEmpty();
+
+        RuleFor(x => x.Email)
+            .NotEmpty()
+            .Matches(new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"));
     }
 }
