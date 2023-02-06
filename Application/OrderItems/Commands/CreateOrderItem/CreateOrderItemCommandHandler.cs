@@ -17,7 +17,7 @@ internal sealed class CreateOrderItemCommandHandler : ICommandHandler<CreateOrde
 
     public async Task<bool> Handle(CreateOrderItemCommand request, CancellationToken cancellationToken)
     {
-        var orderItem = OrderItem.Create(Guid.NewGuid(), request.OrderId, request.ProductId, request.Quantity);
+        var orderItem = OrderItem.Create(Guid.NewGuid(), request.Order, request.Product, request.Quantity);
         _orderItemRepository.Insert(orderItem);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return orderItem is not null;

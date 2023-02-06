@@ -6,8 +6,8 @@ public sealed class CreateOrderItemCommandValidator : AbstractValidator<CreateOr
 {
     public CreateOrderItemCommandValidator()
     {
-        RuleFor(x => x.OrderId).NotEmpty();
-        RuleFor(x => x.ProductId).NotEmpty();
+        RuleFor(x => x.Order).NotEmpty();
+        RuleFor(x => x.Product).NotEmpty();
         RuleFor(x => x.Quantity).NotEmpty();
     }
 }

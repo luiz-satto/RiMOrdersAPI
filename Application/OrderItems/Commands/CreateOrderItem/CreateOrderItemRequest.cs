@@ -1,3 +1,5 @@
-﻿namespace Application.OrderItems.Commands.CreateOrderItem;
+﻿using Domain.Entities;
 
-public sealed record CreateOrderItemRequest(Guid OrderId, Guid ProductId, int Quantity);
+namespace Application.OrderItems.Commands.CreateOrderItem;
+
+public sealed record CreateOrderItemRequest(Order Order, Product Product, int Quantity);

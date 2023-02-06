@@ -26,11 +26,16 @@ public sealed class OrderItem : Entity
 
     public static OrderItem Create(
         Guid id,
-        Guid orderId,
-        Guid productId,
+        Order order,
+        Product product,
         int quantity)
     {
-        var orderItem = new OrderItem(id, orderId, productId, quantity);
+        var orderItem = new OrderItem(id, order.Id, product.Id, quantity)
+        {
+            OrderFk = order,
+            ProductFk = product
+        };
+
         return orderItem;
     }
 }
