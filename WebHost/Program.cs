@@ -26,22 +26,31 @@ builder.Services.AddOptions();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    var presentationDocumentationFile = $"{presentationAssembly.GetName().Name}.xml";
-    var presentationDocumentationFilePath = Path.Combine("..\\Presentation", presentationDocumentationFile);
-    c.IncludeXmlComments(presentationDocumentationFilePath);
+    // var presentationDocumentationFile = $"{presentationAssembly.GetName().Name}.xml";
+    // var presentationDocumentationFilePath = Path.Combine("..\\Presentation", presentationDocumentationFile);
+    // c.IncludeXmlComments(presentationDocumentationFilePath);
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Web", Version = "v1" });
 });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    var server = builder.Configuration["DBServer"] ?? "rimordersdb";
+    var port = builder.Configuration["DBPort"] ?? "1433";
+    var database = builder.Configuration["Database"] ?? "master";
+    var user = builder.Configuration["DBUser"] ?? "SA";
+    var password = builder.Configuration["DBPassword"] ?? "PaSSw0rd2023";
+    options.UseSqlServer(@$"
+        Server={server},{port};
+        Initial Catalog={database};
+        User ID={user};
+        Password={password};
+        Trust Server Certificate=True
+    ");
 });
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-
-
 
 builder.Services.AddScoped<IUnitOfWork>(
     factory => factory.GetRequiredService<AppDbContext>());

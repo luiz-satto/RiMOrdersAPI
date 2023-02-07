@@ -1,0 +1,24 @@
+version: '3'
+services:
+  rimordersapi:
+    image: luizfsatto/rimordersapi
+    container_name: rimorders_api
+    build:
+      context: .
+      dockerfile: WebHost/Dockerfile
+    ports:
+      - "5001:5001"
+    depends_on:
+      - rimordersdb
+    restart: always
+
+  rimordersdb:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: rimorders_db
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "PaSSw0rd2023"
+      MSSQL_PID: Express
+    ports:
+      - "1433:1433"
+    restart: always
