@@ -61,6 +61,7 @@ builder.Services.AddScoped<IDbConnection>(
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
 var app = builder.Build();
+
 // Execute migrations
 await ApplyMigrations(app.Services);
 
