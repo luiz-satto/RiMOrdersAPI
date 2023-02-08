@@ -2,6 +2,6 @@
 
 public sealed record CreateOrderRequest(
     string Email, 
-    string DeliveryAddress, 
-    DateTime CreationDate
+    string DeliveryAddress,
+    DateTime? DateCancelled
 );

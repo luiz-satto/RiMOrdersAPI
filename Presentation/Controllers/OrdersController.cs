@@ -62,7 +62,7 @@ public sealed class OrdersController : ApiController
             _orderItems.Add(_orderItem);
         }
 
-        var _order = Order.Create(orderResponse.Id, orderResponse.Email, orderResponse.DeliveryAddress, orderResponse.CreationDate, _orderItems);
+        var _order = Order.Create(orderResponse.Id, orderResponse.Email, orderResponse.DeliveryAddress, orderResponse.DateCancelled, _orderItems);
         return Ok(_order);
     }
 

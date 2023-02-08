@@ -24,12 +24,12 @@ public sealed class Order : Entity
         CreationDate = DateTime.UtcNow;
     }
 
-    public string Email { get; private set; }
-    public string DeliveryAddress { get; private set; }
+    public string Email { get; set; }
+    public string DeliveryAddress { get; set; }
     public DateTime CreationDate { get; private set; }
-    public DateTime? DateCancelled { get; private set; }
-    public bool IsCancelled { get; private set; }
-    public IReadOnlyList<OrderItem>? Items { get; private set; }
+    public DateTime? DateCancelled { get; set; }
+    public bool IsCancelled { get; set; }
+    public IReadOnlyList<OrderItem>? Items { get; set; }
 
     public static Order Create(
         Guid id,

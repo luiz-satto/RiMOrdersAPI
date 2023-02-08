@@ -10,9 +10,6 @@ public sealed class CreateOrderCommandValidator : AbstractValidator<CreateOrderC
         RuleFor(x => x.DeliveryAddress)
             .NotEmpty();
 
-        RuleFor(x => x.CreationDate)
-            .NotEmpty();
-
         RuleFor(x => x.Email)
             .NotEmpty()
             .Matches(new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"));
