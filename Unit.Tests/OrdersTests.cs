@@ -1,71 +1,35 @@
-﻿using Application.OrderItems.Commands.CreateOrderItem;
-using Application.Orders.Commands.CreateOrder;
-using Microsoft.AspNetCore.Mvc;
-using Presentation.Controllers;
+﻿using Application.Orders.Queries;
 using System;
-using System.Linq;
-using System.Threading;
+using System.Diagnostics;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Unit.Tests;
 
-public class OrdersTests
+public sealed class OrdersTests : TestBase
 {
-    private readonly OrdersController _ordersController;
-    private readonly OrderItemsController _orderItemsController;
-
-    public OrdersTests()
-    {
-        _ordersController = new OrdersController();
-        _orderItemsController = new OrderItemsController();
-    }
-
     [Fact]
-    public void Orders_Controller_Instance_Should_Be_NotNull()
+    public async Task GivenARequest_WhenCallingGetOrdersById_ThenTheAPIReturnsExpectedResponse()
     {
-        // Arrage        
-        // Act
-        // Assert
-        Assert.NotNull(_ordersController);
-    }
+        // Arrange.
+        var expectedStatusCode = System.Net.HttpStatusCode.OK;
+        var expectedContent = new OrderResponse(
+            Guid.Parse("2a5e24e2-1af2-45ca-b556-75774b88919d"),
+            "jucajarbas@gmail.com",
+            "45,CASTLEKNOCK MEADOWS,LAUREL LODGE,DUBLIN 15,D15A973",
+            DateTime.Parse("2023-02-05T17:15:37.63"),
+            DateTime.Parse("2023-02-05T17:15:37.63"),
+            0);
 
-    [Fact]
-    public async void CreateOrder_Returns_Order_Id()
-    {
-        // Arrage
-        var request = new CreateOrderRequest(
-            RandomString(10),
-            RandomString(100),
-            null);
+        var stopwatch = Stopwatch.StartNew();
 
-        var cts = new CancellationTokenSource();
-        cts.CancelAfter(TimeSpan.FromSeconds(5));
+        // Act.
+        var response = await SendAsync(
+            HttpMethod.Get,
+            "/api/Orders/Get:2a5e24e2-1af2-45ca-b556-75774b88919d");
 
-        // Act
-        var result = await _ordersController.CreateOrder(request, cts.Token);
-        var objResult = result as ObjectResult;
-        var guid = objResult is not null ? objResult.Value.ToString() : "";
-
-        // Assert
-        Assert.True(Guid.TryParse(guid, out Guid _guid));
-    }
-
-    [Fact]
-    public void OrderItems_Controller_Instance_Should_Be_NotNull()
-    {
-        // Arrage        
-        // Act
-        // Assert
-        Assert.NotNull(_orderItemsController);
-    }
-
-    private static readonly Random Random = new();
-    private static string RandomString(int length)
-    {
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        return new string(Enumerable.Repeat(chars, length)
-            .Select(s => s[Random.Next(s.Length)])
-            .ToArray()
-        );
+        // Assert.
+        await AssertResponseWithContentAsync(stopwatch, response, expectedStatusCode, expectedContent);
     }
 }

@@ -4,9 +4,6 @@ namespace Application.OrderItems.Commands.CreateOrderItem;
 
 public sealed record CreateOrderItemCommand(
     Guid OrderId,
-    string OrderEmail,
-    string OrderDeliveryAddress,
-    DateTime? DateCancelled,
     Guid ProductId,
     string ProductName,
     string ProductDescription,

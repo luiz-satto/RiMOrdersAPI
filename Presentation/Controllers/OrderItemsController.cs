@@ -39,9 +39,6 @@ public sealed class OrderItemsController : ApiController
             var _orderItem = OrderItem.Create(
                 item.Id,
                 orderResponse.Id,
-                orderResponse.Email,
-                orderResponse.DeliveryAddress,
-                orderResponse.DateCancelled,
                 item.ProductId,
                 item.ProductName,
                 item.ProductDescription,

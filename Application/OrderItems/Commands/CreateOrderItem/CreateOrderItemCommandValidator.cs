@@ -10,14 +10,6 @@ public sealed class CreateOrderItemCommandValidator : AbstractValidator<CreateOr
         RuleFor(x => x.OrderId)
             .NotEmpty();
 
-        RuleFor(x => x.OrderEmail)
-            .NotEmpty()
-            .Matches(new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"));
-
-        RuleFor(x => x.OrderDeliveryAddress)
-            .NotEmpty()
-            .MaximumLength(100);
-
         RuleFor(x => x.ProductId)
             .NotEmpty();
 

@@ -8,7 +8,6 @@ using Application.Orders.Queries.GetAllOrders;
 using Domain.Entities;
 using Domain.Shared;
 using Mapster;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,13 +29,6 @@ public sealed class OrdersController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetOrder(Guid orderId, CancellationToken cancellationToken)
     {
-        var orderQuery = new GetOrderByIdQuery(orderId);
-        var orderResponse = await Sender.Send(orderQuery, cancellationToken);
-        if (orderResponse is null)
-        {
-            throw new Exception(Error.NullValue);
-        }
-
         var orderItemsQuery = new GetOrderItemsByIdQuery(orderId);
         var orderItemResponse = await Sender.Send(orderItemsQuery, cancellationToken);
         if (orderItemResponse is null)
@@ -44,26 +36,34 @@ public sealed class OrdersController : ApiController
             throw new Exception(Error.NullValue);
         }
 
-        var _orderItems = new List<OrderItem>();
-        foreach (var item in orderItemResponse)
-        {
-            var _orderItem = OrderItem.Create(
+        var _orderItems = orderItemResponse.Select(item => OrderItem
+            .Create(
                 item.Id,
-                orderResponse.Id,
-                orderResponse.Email,
-                orderResponse.DeliveryAddress,
-                orderResponse.DateCancelled,
+                orderId,
                 item.ProductId,
                 item.ProductName,
                 item.ProductDescription,
                 item.ProductPrice,
                 item.ProductStock,
-                item.Quantity);
+                item.Quantity))
+            .ToList();
 
-            _orderItems.Add(_orderItem);
+        var orderQuery = new GetOrderByIdQuery(orderId);
+        var orderResponse = await Sender.Send(orderQuery, cancellationToken);
+        if (orderResponse is null)
+        {
+            throw new Exception(Error.NullValue);
         }
 
-        var _order = Order.Create(orderResponse.Id, orderResponse.Email, orderResponse.DeliveryAddress, orderResponse.DateCancelled, _orderItems);
+        var _order = Order
+            .Create(
+                orderResponse.Id,
+                orderResponse.Email,
+                orderResponse.DeliveryAddress,
+                orderResponse.DateCancelled,
+                orderResponse.CreationDate,
+                _orderItems);
+
         return Ok(_order);
     }
 

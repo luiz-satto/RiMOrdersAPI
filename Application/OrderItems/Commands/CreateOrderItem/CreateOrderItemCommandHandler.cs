@@ -20,9 +20,6 @@ internal sealed class CreateOrderItemCommandHandler : ICommandHandler<CreateOrde
         var orderItem = OrderItem.Create(
             Guid.NewGuid(),
             request.OrderId,
-            request.OrderEmail,
-            request.OrderDeliveryAddress,
-            request.DateCancelled,
             request.ProductId,
             request.ProductName,
             request.ProductDescription,
