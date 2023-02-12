@@ -1,7 +1,5 @@
 using Application.Products.Commands.CreateProduct;
-using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Presentation.Controllers;
 using System;
 using System.Linq;

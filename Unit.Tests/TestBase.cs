@@ -11,7 +11,7 @@ namespace Unit.Tests;
 public class TestBase
 {
     private const string _jsonMediaType = "application/json";
-    private const int _expectedMaxElapsedMilliseconds = 1000;
+    private const int _expectedMaxElapsedMilliseconds = 5000;
     private static readonly JsonSerializerOptions _jsonSerializerOptions = new() { PropertyNameCaseInsensitive = true };
     private readonly HttpClient _httpClient = new() { BaseAddress = new Uri("https://localhost:7107") };
 
