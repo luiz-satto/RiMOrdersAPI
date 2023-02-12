@@ -8,6 +8,7 @@ using Application.Orders.Queries.GetAllOrders;
 using Domain.Entities;
 using Domain.Shared;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

@@ -26,10 +26,31 @@ builder.Services.AddOptions();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    // var presentationDocumentationFile = $"{presentationAssembly.GetName().Name}.xml";
-    // var presentationDocumentationFilePath = Path.Combine("..\\Presentation", presentationDocumentationFile);
-    // c.IncludeXmlComments(presentationDocumentationFilePath);
+    var presentationDocumentationFile = $"{presentationAssembly.GetName().Name}.xml";
+    var presentationDocumentationFilePath = Path.Combine("..\\Presentation", presentationDocumentationFile);
+    c.IncludeXmlComments(presentationDocumentationFilePath);
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Web", Version = "v1" });
+    c.AddSecurityDefinition("X-Api-Key", new OpenApiSecurityScheme
+    {
+        Description = "Api Key must appear in header",
+        Type = SecuritySchemeType.ApiKey,
+        Name = "X-Api-Key",
+        In = ParameterLocation.Header,
+        Scheme = "ApiKeyScheme"
+    });
+
+    var key = new OpenApiSecurityScheme()
+    {
+        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "X-Api-Key" },
+        In = ParameterLocation.Header
+    };
+
+    var requirement = new OpenApiSecurityRequirement
+    {
+        { key, new List<string>() }
+    };
+
+    c.AddSecurityRequirement(requirement);
 });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
