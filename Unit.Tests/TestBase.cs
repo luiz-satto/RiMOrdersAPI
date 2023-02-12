@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -20,10 +21,16 @@ public class TestBase
 
     }
 
-    protected async Task<HttpResponseMessage> SendAsync(HttpMethod httpMethod, string requestUri)
+    protected async Task<HttpResponseMessage> SendAsync(HttpMethod httpMethod, string requestUri, JsonContent? content = null)
     {
         var request = new HttpRequestMessage(httpMethod, requestUri);
         request.Headers.Add("X-Api-Key", "042848e7-b3bb-4f89-90c1-1a4f56ae84df");
+
+        if (content is not null)
+        {
+            request.Content = content;
+        }
+
         return await _httpClient.SendAsync(request);
     }
 
@@ -43,7 +50,7 @@ public class TestBase
         Assert.Equal(expectedContent, actualContent);
     }
 
-    private static void AssertCommonResponseParts(Stopwatch stopwatch,
+    protected static void AssertCommonResponseParts(Stopwatch stopwatch,
         HttpResponseMessage response, System.Net.HttpStatusCode expectedStatusCode)
     {
         Assert.Equal(expectedStatusCode, response.StatusCode);

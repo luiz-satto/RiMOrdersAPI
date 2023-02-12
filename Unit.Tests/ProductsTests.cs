@@ -1,51 +1,34 @@
-using Application.Products.Commands.CreateProduct;
-using Microsoft.AspNetCore.Mvc;
-using Presentation.Controllers;
 using System;
+using System.Diagnostics;
 using System.Linq;
-using System.Threading;
+using System.Net.Http;
+using System.Net.Http.Json;
 using Xunit;
 
 namespace Unit.Tests;
 
-public class ProductsTests
+public class ProductsTests : TestBase
 {
-    private readonly ProductsController _productsController;
-
-    public ProductsTests()
-    {
-        _productsController = new ProductsController();
-    }
-
     [Fact]
-    public void Products_Controller_Instance_Should_Be_NotNull()
-    {
-        // Arrage        
-        // Act
-        // Assert
-        Assert.NotNull(_productsController);
-    }
-
-    [Fact]
-    public async void CreateProduct_Returns_Product_Id()
+    public async void CreateProduct_Should_ReturnHttpStatusCodeCreated()
     {
         // Arrage
-        var request = new CreateProductRequest(
-            RandomString(10),
-            RandomString(100),
-            Random.NextDouble(),
-            Random.Next(1000));
+        var expectedStatusCode = System.Net.HttpStatusCode.Created;
+        var content = JsonContent.Create(new
+        {
+            Name = RandomString(10),
+            Description = RandomString(1000),
+            Price = Random.NextDouble(),
+            Stock = Random.Next(1000)
+        });
 
-        var cts = new CancellationTokenSource();
-        cts.CancelAfter(TimeSpan.FromSeconds(5));
+        var stopwatch = Stopwatch.StartNew();
 
         // Act
-        var result = await _productsController.CreateProduct(request, cts.Token);
-        var objResult = result as ObjectResult;
-        var guid = objResult is not null ? objResult.Value.ToString() : "";
+        var response = await SendAsync(HttpMethod.Post, $"/api/Products/Create", content);
 
         // Assert
-        Assert.True(Guid.TryParse(guid, out Guid _guid));
+        AssertCommonResponseParts(stopwatch, response, expectedStatusCode);
     }
 
     private static readonly Random Random = new();

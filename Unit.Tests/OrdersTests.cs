@@ -10,7 +10,7 @@ namespace Unit.Tests;
 public sealed class OrdersTests : TestBase
 {
     [Fact]
-    public async Task WhenCallingGetOrderById_API_Should_ReturnExpectedResponse_1()
+    public async Task GetOrderById_API_Should_ReturnExpectedResponse_1()
     {
         // Arrange.
         var orderId = "2a5e24e2-1af2-45ca-b556-75774b88919d";
@@ -33,7 +33,7 @@ public sealed class OrdersTests : TestBase
     }
 
     [Fact]
-    public async Task WhenCallingGetOrderById_API_Should_ReturnExpectedResponse_2()
+    public async Task GetOrderById_API_Should_ReturnExpectedResponse_2()
     {
         // Arrange.
         var orderId = "2de4cf4d-a161-4819-a53a-9f7edf711f43";
